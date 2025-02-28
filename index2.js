@@ -9,6 +9,27 @@ const port =8001;
 
 app.use(express.urlencoded({extended:false}));
 
+app.use((req,res,next)=>{
+    console.log("hello from middleware");
+    req.myUsername="khanna app dev"
+    // return res.json({msg:"hello from middle ware one"});
+    next();
+})
+
+//second middleware
+
+app.use((req,res,next)=>{
+    console.log("hello from middleware 2",req.myUsername);
+    // return res.end("hey");
+    next();
+    
+})
+// using fs module 
+app.use((req,res,next)=>{
+    fs.appendFile("log.txt",`${Date.now()}: ${req.method} : ${req.path}\n`,(err,data)=>{
+        next();
+    })
+})
 
 app.get("/users",(req,res)=>{
     const html=`
@@ -20,6 +41,7 @@ app.get("/users",(req,res)=>{
 })
 
 app.get("/api/users",(req,res)=>{
+    console.log("i am route api",req.myUsername)
     return res.json(users);
 })
 
